@@ -1,12 +1,23 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:dbms/src/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class QueryScreen extends StatelessWidget {
-  QueryScreen({super.key});
+class QueryScreen extends StatefulWidget {
+  const QueryScreen({super.key});
   static const String name = 'query-screen';
 
+  @override
+  State<QueryScreen> createState() => _QueryScreenState();
+}
+
+class _QueryScreenState extends State<QueryScreen> {
   final tables = ["users", "cars", "vehicles", "dni"];
+
   final columns = ["Id", "Nombre", "Apellido"];
+
+  final TextEditingController queryController = TextEditingController();
+
   final rows = [
     ["1", "Juan", "Pérez"],
     ["2", "María", "López"],
@@ -22,6 +33,9 @@ class QueryScreen extends StatelessWidget {
     ["12", "Javier", "González"],
   ];
 
+  int selectedTab = 0;
+  late Widget selectedView;
+
   List<DataColumn> _buildDataColumns() {
     return columns.map((header) => DataColumn(label: Text(header))).toList();
   }
@@ -31,6 +45,33 @@ class QueryScreen extends StatelessWidget {
       return DataRow(
           cells: data.map((cellData) => DataCell(Text(cellData))).toList());
     }).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectedView = TableResponseWidget(
+      columns: _buildDataColumns(),
+      rows: _buildDataRows(),
+    );
+  }
+
+  void _changeTab(int index) {
+    setState(
+      () {
+        selectedTab = index;
+        if (selectedTab == 0) {
+          selectedView = TableResponseWidget(
+            columns: _buildDataColumns(),
+            rows: _buildDataRows(),
+          );
+        } else if (selectedTab == 1) {
+          selectedView = const Text("Messages");
+        } else if (selectedTab == 2) {
+          selectedView = const Text("Notifications");
+        }
+      },
+    );
   }
 
   @override
@@ -45,26 +86,78 @@ class QueryScreen extends StatelessWidget {
             flex: 3,
             child: Column(
               children: [
-                const Expanded(flex: 1, child: SQLQueriesText()),
                 Expanded(
                   flex: 1,
                   child: Column(
                     children: [
                       const Row(
                         children: [
-                          Text("Data output"),
-                          SizedBox(width: 28),
-                          Text("Messages"),
-                          SizedBox(width: 28),
-                          Text("Notifications")
+                          Text("Play"),
                         ],
                       ),
-                      const SizedBox(height: 4),
                       Expanded(
-                        child: TableResponseWidget(
-                          columns: _buildDataColumns(),
-                          rows: _buildDataRows(),
+                          child: SQLQueriesText(
+                        controller: queryController,
+                      )),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Colors.grey,
+                        child: Row(
+                          children: [
+                            InkWell(
+                              onTap: () => _changeTab(0),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32,
+                                  vertical: 8,
+                                ),
+                                color: selectedTab == 0
+                                    ? Colors.blue
+                                    : Colors.grey,
+                                child: const Center(child: Text("Data output")),
+                              ),
+                            ),
+                            // const SizedBox(width: 28),
+                            InkWell(
+                              onTap: () => _changeTab(1),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32,
+                                  vertical: 8,
+                                ),
+                                color: selectedTab == 1
+                                    ? Colors.blue
+                                    : Colors.grey,
+                                child: const Center(child: Text("Messages")),
+                              ),
+                            ),
+                            // const SizedBox(width: 28),
+                            InkWell(
+                              onTap: () => _changeTab(2),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32,
+                                  vertical: 8,
+                                ),
+                                color: selectedTab == 2
+                                    ? Colors.blue
+                                    : Colors.grey,
+                                child:
+                                    const Center(child: Text("Notifications")),
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+                      // const SizedBox(height: 4),
+                      Expanded(
+                        child: selectedView,
                       ),
                     ],
                   ),
@@ -113,7 +206,10 @@ class TableResponseWidget extends StatelessWidget {
 class SQLQueriesText extends StatelessWidget {
   const SQLQueriesText({
     super.key,
+    required this.controller,
   });
+
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -210,32 +306,6 @@ class ListOfTables extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class TableNameWidget extends StatelessWidget {
-  const TableNameWidget({super.key, required this.tableName});
-
-  final String tableName;
-
-  @override
-  Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme;
-    return InkWell(
-      onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6.0),
-        child: Row(
-          children: [
-            const Icon(Icons.table_chart_rounded),
-            const SizedBox(width: 16),
-            Text(tableName, style: textStyle.bodyMedium),
-            const Spacer(),
-            const Icon(Icons.keyboard_arrow_down_outlined),
-          ],
-        ),
       ),
     );
   }
