@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:dbms/api/only_api.dart';
 import 'package:dbms/src/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -96,11 +97,21 @@ class _QueryScreenState extends State<QueryScreen> {
     );
   }
 
-  void sendQueryToApi(String query) {
-    final value = formatSQLQueries(query);
-    print("Query enviado a la API: $value");
-    _changeTab(0);
-    setState(() {});
+  void sendQueryToApi(String query) async {
+    try {
+      final value = formatSQLQueries(query);
+      print("Query enviado a la API: $value");
+
+      final responseModel = await QueryApiService().queryPost(query);
+      _changeTab(0);
+      setState(() {
+        tables = responseModel.tables;
+        columns = responseModel.columns;
+        rows = responseModel.rows;
+      });
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   void refreshTable() {

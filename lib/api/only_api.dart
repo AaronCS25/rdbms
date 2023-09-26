@@ -4,13 +4,14 @@ import 'package:dio/dio.dart';
 class QueryApiService {
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://localhost:8080/query',
+      baseUrl: 'http://localhost:8080',
     ),
   );
 
   // Future<Map<String, dynamic>>
   Future<QueryResponseModel> queryPost(String query) async {
     try {
+      print("estoy enviando query: $query");
       final response = await dio.post('/query', data: {"query": query});
 
       if (response.statusCode == 200) {
