@@ -54,6 +54,15 @@ class _QueryScreenState extends State<QueryScreen> {
 
   bool isTableRefreshed = true;
 
+  // String messageFormated = '';
+
+  String formatSQLQueries() {
+    final lines = queryController.text.split('\n');
+    final value =
+        lines.where((line) => !line.trimLeft().startsWith('--')).join('\n');
+    return value;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -78,7 +87,7 @@ class _QueryScreenState extends State<QueryScreen> {
               : const Text("No data");
         } else if (selectedTab == 1) {
           selectedView = MessageView(
-              message: queryController.text, timeToExecute: timeToExecute);
+              message: formatSQLQueries(), timeToExecute: timeToExecute);
         } else if (selectedTab == 2) {
           selectedView = const Text("Notifications");
         }
@@ -371,22 +380,22 @@ class MessageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              message,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text('Message: \n $message'),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Tiempo de ejecución: $timeToExecute ms',
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              'Tiempo de ejecución: $timeToExecute ms',
+            ),
+          ],
+        ),
       ),
     );
   }
