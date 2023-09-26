@@ -12,6 +12,6 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
   ),
   GoRoute(
     path: '/dashboard/project/unknown',
-    builder: (context, state) => QueryScreen(),
+    builder: (context, state) => const QueryScreen(),
   ),
 ]);

@@ -1,21 +1,22 @@
+import 'package:dbms/models/only_api_response_model.dart';
 import 'package:dio/dio.dart';
 
 class QueryApiService {
   final dio = Dio(
     BaseOptions(
-      baseUrl: '',
+      baseUrl: 'hasdasdad',
     ),
   );
 
   // Future<Map<String, dynamic>>
-  Future<bool> queryPost(String query) async {
+  Future<QueryResponseModel> queryPost(String query) async {
     try {
-      final response = await dio.post('/', data: {"query": query});
+      final response = await dio.post('/query', data: {"query": query});
 
       if (response.statusCode == 200) {
-        return true;
+        return QueryResponseModel.fromJson(response.data);
       } else {
-        return false;
+        throw AssertionError('Error query: ${response.statusCode}');
       }
     } catch (e) {
       throw AssertionError('Error query: $e');

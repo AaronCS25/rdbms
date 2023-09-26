@@ -11,26 +11,32 @@ class QueryScreen extends StatefulWidget {
 }
 
 class _QueryScreenState extends State<QueryScreen> {
-  final tables = ["users", "cars", "vehicles", "dni"];
+  final timeToExecute = 0.0;
 
-  final columns = ["Id", "Nombre", "Apellido"];
+  // final tables = ["users", "cars", "vehicles", "dni"];
+  final List<String> tables = [];
+
+  // final columns = ["Id", "Nombre", "Apellido"];
+  final List<String> columns = [];
 
   final TextEditingController queryController = TextEditingController();
 
-  final rows = [
-    ["1", "Juan", "Pérez"],
-    ["2", "María", "López"],
-    ["3", "Carlos", "Flores"],
-    ["4", "Laura", "González"],
-    ["5", "Andrés", "Martínez"],
-    ["6", "Ana", "Ramírez"],
-    ["7", "Pedro", "Díaz"],
-    ["8", "Isabel", "Gómez"],
-    ["9", "Roberto", "Luna"],
-    ["10", "Luis", "Sánchez"],
-    ["11", "Carmen", "Pérez"],
-    ["12", "Javier", "González"],
-  ];
+  // final rows = [
+  //   ["1", "Juan", "Pérez"],
+  //   ["2", "María", "López"],
+  //   ["3", "Carlos", "Flores"],
+  //   ["4", "Laura", "González"],
+  //   ["5", "Andrés", "Martínez"],
+  //   ["6", "Ana", "Ramírez"],
+  //   ["7", "Pedro", "Díaz"],
+  //   ["8", "Isabel", "Gómez"],
+  //   ["9", "Roberto", "Luna"],
+  //   ["10", "Luis", "Sánchez"],
+  //   ["11", "Carmen", "Pérez"],
+  //   ["12", "Javier", "González"]
+  // ];
+
+  final List<List<String>> rows = [];
 
   int selectedTab = 0;
   late Widget selectedView;
@@ -49,10 +55,12 @@ class _QueryScreenState extends State<QueryScreen> {
   @override
   void initState() {
     super.initState();
-    selectedView = TableResponseWidget(
-      columns: _buildDataColumns(),
-      rows: _buildDataRows(),
-    );
+    rows.isNotEmpty && columns.isNotEmpty
+        ? selectedView = TableResponseWidget(
+            columns: _buildDataColumns(),
+            rows: _buildDataRows(),
+          )
+        : selectedView = const Text("No data");
   }
 
   void _changeTab(int index) {
@@ -60,10 +68,12 @@ class _QueryScreenState extends State<QueryScreen> {
       () {
         selectedTab = index;
         if (selectedTab == 0) {
-          selectedView = TableResponseWidget(
-            columns: _buildDataColumns(),
-            rows: _buildDataRows(),
-          );
+          selectedView = rows.isNotEmpty && columns.isNotEmpty
+              ? TableResponseWidget(
+                  columns: _buildDataColumns(),
+                  rows: _buildDataRows(),
+                )
+              : const Text("No data");
         } else if (selectedTab == 1) {
           selectedView = const Text("Messages");
         } else if (selectedTab == 2) {
