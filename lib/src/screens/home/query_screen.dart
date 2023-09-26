@@ -11,15 +11,15 @@ class QueryScreen extends StatefulWidget {
 }
 
 class _QueryScreenState extends State<QueryScreen> {
-  final timeToExecute = 0.0;
+  double timeToExecute = 0.0;
 
   // final tables = ["users", "cars", "vehicles", "dni"];
-  final List<String> tables = [];
+  List<String> tables = [];
 
   // final columns = ["Id", "Nombre", "Apellido"];
-  final List<String> columns = [];
+  List<String> columns = [];
 
-  final TextEditingController queryController = TextEditingController();
+  TextEditingController queryController = TextEditingController();
 
   // final rows = [
   //   ["1", "Juan", "Pérez"],
@@ -36,7 +36,7 @@ class _QueryScreenState extends State<QueryScreen> {
   //   ["12", "Javier", "González"]
   // ];
 
-  final List<List<String>> rows = [];
+  List<List<String>> rows = [];
 
   int selectedTab = 0;
   late Widget selectedView;
@@ -77,7 +77,8 @@ class _QueryScreenState extends State<QueryScreen> {
                 )
               : const Text("No data");
         } else if (selectedTab == 1) {
-          selectedView = const Text("Messages");
+          selectedView = MessageView(
+              message: queryController.text, timeToExecute: timeToExecute);
         } else if (selectedTab == 2) {
           selectedView = const Text("Notifications");
         }
@@ -87,6 +88,7 @@ class _QueryScreenState extends State<QueryScreen> {
 
   void sendQueryToApi(String query) {
     print("Query enviado a la API: $query");
+    _changeTab(0);
     setState(() {});
   }
 
@@ -350,6 +352,39 @@ class ListOfTables extends StatelessWidget {
                 );
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MessageView extends StatelessWidget {
+  const MessageView({
+    super.key,
+    required this.message,
+    required this.timeToExecute,
+  });
+
+  final String message;
+  final double timeToExecute;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              message,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Tiempo de ejecución: $timeToExecute ms',
           ),
         ],
       ),
