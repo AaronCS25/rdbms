@@ -52,6 +52,8 @@ class _QueryScreenState extends State<QueryScreen> {
     }).toList();
   }
 
+  bool isTableRefreshed = true;
+
   @override
   void initState() {
     super.initState();
@@ -88,6 +90,17 @@ class _QueryScreenState extends State<QueryScreen> {
     setState(() {});
   }
 
+  void refreshTable() {
+    print("Refresh table main!");
+    isTableRefreshed = false;
+    setState(() {});
+    //TODO: AQUÍ SE HARÁ UN query de algo
+    Future.delayed(const Duration(seconds: 5), () {
+      isTableRefreshed = true;
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +108,8 @@ class _QueryScreenState extends State<QueryScreen> {
         children: [
           ListOfTables(
             tablesNames: tables,
+            isTableRefreshed: isTableRefreshed,
+            refreshTable: refreshTable,
           ),
           Expanded(
             flex: 3,
@@ -256,10 +271,13 @@ class ListOfTables extends StatelessWidget {
   const ListOfTables({
     super.key,
     required this.tablesNames,
+    required this.isTableRefreshed,
+    required this.refreshTable,
   });
 
   final List<String> tablesNames;
-  final isTableRefreshed = true;
+  final bool isTableRefreshed;
+  final Function refreshTable;
 
   @override
   Widget build(BuildContext context) {
@@ -310,8 +328,7 @@ class ListOfTables extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    // llamada a la api sobre las tablas
-                    //función actualizar tablas
+                    refreshTable();
                   },
                   icon: isTableRefreshed
                       ? const Icon(Icons.refresh_outlined)
