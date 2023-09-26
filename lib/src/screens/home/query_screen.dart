@@ -1,7 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:dbms/src/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class QueryScreen extends StatefulWidget {
   const QueryScreen({super.key});
@@ -74,6 +73,11 @@ class _QueryScreenState extends State<QueryScreen> {
     );
   }
 
+  void sendQueryToApi(String query) {
+    print("Query enviado a la API: $query");
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,10 +94,21 @@ class _QueryScreenState extends State<QueryScreen> {
                   flex: 1,
                   child: Column(
                     children: [
-                      const Row(
-                        children: [
-                          Text("Play"),
-                        ],
+                      Container(
+                        color: Colors.grey,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                sendQueryToApi(queryController.text);
+                              },
+                              icon: const Icon(
+                                Icons.play_arrow_rounded,
+                                color: Color.fromRGBO(77, 255, 174, 1.0),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Expanded(
                           child: SQLQueriesText(
@@ -213,11 +228,12 @@ class SQLQueriesText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const TextField(
+    return TextField(
+      controller: controller,
       maxLines: null,
       expands: true,
       keyboardType: TextInputType.multiline,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         hintText: 'SELECT * FROM TABLE1',
         border: OutlineInputBorder(),
       ),
@@ -283,7 +299,10 @@ class ListOfTables extends StatelessWidget {
                   child: const Icon(Icons.sort_outlined),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // llamada a la api sobre las tablas
+                    //función actualizar tablas
+                  },
                   icon: isTableRefreshed
                       ? const Icon(Icons.refresh_outlined)
                       : SpinPerfect(
