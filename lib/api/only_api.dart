@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 class QueryApiService {
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'hasdasdad',
+      baseUrl: 'http://localhost:8080/query',
     ),
   );
 

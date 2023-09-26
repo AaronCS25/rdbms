@@ -56,8 +56,8 @@ class _QueryScreenState extends State<QueryScreen> {
 
   // String messageFormated = '';
 
-  String formatSQLQueries() {
-    final lines = queryController.text.split('\n');
+  String formatSQLQueries(String text) {
+    final lines = text.split('\n');
     final value =
         lines.where((line) => !line.trimLeft().startsWith('--')).join('\n');
     return value;
@@ -87,7 +87,8 @@ class _QueryScreenState extends State<QueryScreen> {
               : const Text("No data");
         } else if (selectedTab == 1) {
           selectedView = MessageView(
-              message: formatSQLQueries(), timeToExecute: timeToExecute);
+              message: formatSQLQueries(queryController.text),
+              timeToExecute: timeToExecute);
         } else if (selectedTab == 2) {
           selectedView = const Text("Notifications");
         }
@@ -96,7 +97,8 @@ class _QueryScreenState extends State<QueryScreen> {
   }
 
   void sendQueryToApi(String query) {
-    print("Query enviado a la API: $query");
+    final value = formatSQLQueries(query);
+    print("Query enviado a la API: $value");
     _changeTab(0);
     setState(() {});
   }
